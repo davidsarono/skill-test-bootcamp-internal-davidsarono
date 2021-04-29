@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/vue@next"></script>
+    <script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.min.js"></script>
+    <script src="https://unpkg.com/jspdf-autotable@3.5.14/dist/jspdf.plugin.autotable.js"></script>
+    <title>Payment Receipt App</title>
+</head>
+<body>
+    <div id="app">
+        
+        <div v-if="isOpenModal" id="modal-add">
+            <button @click="closeModal">Exit</button>
+            <h1>Add Item and Price</h1>
+
+            <form @submit.prevent="addItem">
+                <div>
+                    <label for="item-name">Item:</label>
+                    <input type="text" id="item-name" v-model="itemName" required>
+                </div>
+                <div>
+                    <label for="price-item">Price:</label>
+                    <input type="text" id="price-item" v-model="priceItem" required>
+                </div>
+                <button>Add</button>
+            </form>
+
+            <p>Items You Have Added</p>
+            <ul>
+                <li v-for="item in items">
+                    <span>{{ item.name }}</span>
+                    <span>{{ item.price }}</span>
+                </li>
+            </ul>
+        </div>
+
+        <div v-else id="main">
+            <form>
+                <div>
+                    <label for="resto-name">Resto Name</label>
+                    <input type="text" id="resto-name" v-model="restoName" required>
+                </div>
+                <div>
+                    <label for="date-print">Date</label>
+                    <input type="datetime-local" id="date-print" v-model="datePrintAt" required>
+                </div>
+                <div>
+                    <label for="cashier-name">Cashier Name</label>
+                    <input type="text" id="cashier-name" v-model="cashierName" required>
+                </div>
+                <button @click="openModal">Add Item</button>
+            </form>
+            
+            <div id="buttons">
+                <div>
+                    <button id="print-btn" @click="toggleShow">{{ showPayment ? 'Close' : 'Show'}}</button>
+                    <button id="print-btn" @click="print">Print</button>
+                </div>
+
+                <button id="clear-btn" @click="resetInput">Clear</button>
+            </div>
+        </div>
+
+
+        <div id="show-payment" v-if="showPayment">
+            <h1>{{ restoName }}</h1>
+            <p class="details">Tanggal <span>:</span><span>{{ getDate }}</span></p>
+            <p class="details">Nama Kasir <span>:</span><span>{{ cashierName }}</span></p>
+            <span>==============================</span>
+            <ul v-if="items.length">
+                <li v-for="item in items">
+                    <span>{{ item.name }}</span>
+                    <span>{{ item.price }}</span>
+                </li>
+            </ul>
+            <p v-else id="warn">No items have been added!</p>
+        </div>
+    </div>
+
+
+    <script src="app.js"></script>
+</body>
+</html>
